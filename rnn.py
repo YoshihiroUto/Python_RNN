@@ -109,5 +109,14 @@ def create_batch_generator(x, y=None, batch_size=64):
 上記の問題を解決するための手法⇓
 ・埋め込み
 　各単語を実数地の要素を持つ固定サイズのベクトルにマッピングする．  
-
+　今回は，上記のマッピング作業を，TensorFlowのtf.nn.embedding_lookup関数がやってくれる
 '''
+# 1.サイズが　一意な単語の個数　×　埋め込み先のベクトル次元数　の行列をembeddingというテンソル変数[TensorFlow用の変数]として作成
+#                  n_words             embedding_size
+#   この行列の要素を，-1~1の変数で初期化する．
+embedding = tf.Variable(
+    tf.random_uniform(shape=(n_words, embedding_size), minval=-1, maxval=1))
+
+# 2. tf.nn.embedding_lookup関数を呼び出し，tf_x[入力層]の各要素に関連する埋め込み行列の行を特定する
+embed_x = tf.nn.embedding_lookup(embedding, tf_x)
+
