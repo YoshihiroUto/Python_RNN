@@ -69,3 +69,21 @@ for i, row in enumerate(mapped_reviews):
     sequences[i, -len(row):] = review_arr[-sequence_length:]
 
 print(sequences[:20,:])
+
+''' Helper[ ミニバッチを生成する ]
+与えられたデータセット(トレーニングセットorテストセット)をチャンクに分割し，
+これらのチャンクを反復的に処理するためのジェネレータを返す．
+'''
+np.random.seed(123) # 乱数を再現可能にするため
+
+# ミニバッチを生成する関数を定義
+def create_batch_generator(x, y=None, batch_size=64):
+    n_batches = len(x) // batch_size
+    x = x[:n_batches*batch_size]
+    if y is not None:
+        y = y[:n_batches*batch_size]
+    for ii in range(0, len(x), batch_size):
+        if y is not None:
+            yield x[ii:ii+batch_size], y[ii:ii+batch_size]
+        else:
+            yield x[ii:ii+batch_size]
