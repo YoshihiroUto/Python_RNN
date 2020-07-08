@@ -15,10 +15,11 @@ import numpy as np
 # 映画レビューデータの読み込み
 df = pd.read_csv('movie_data.csv')
 
+print(df)
 
 '''
 データの前処理；
-# 単語の分割をし，各単語の出現回数をカウント
+単語の分割をし，各単語の出現回数をカウント
 '''
 # 大量のデータセットから一意の単語を見つけるのに便利なcollectionsパッケージのCounterを読み込む
 from collections import Counter
@@ -32,4 +33,24 @@ for i,review in enumerate(df['review']):
     df.loc()[i, 'review'] = text
     pbar.update()
     counts.update(text.split())
+
+print(df)
+
+'''
+マッピングを作成：
+一意な単語をそれぞれ整数にマッピング．
+(映画レビューのテキスト全体を数値のリストに変換するためのプログラム)
+    mapped_reviews -> テキストデータを数値データに変換したとのデータ構造が代入される
+'''
+word_counts = sorted(counts, key=counts.get, reverse=True)
+print(word_counts[:5])
+word_to_int = {word: ii for ii, word in enumerate(word_counts, 1)}
+
+mapped_reviews = []
+pbar = pyprind.ProgBar(len(df['review']), title='Map reviews to ints')
+for review in df['review']:
+    mapped_reviews.append([word_to_int[word] for word in review.split()])
+    pbar.update()
+
+
 
