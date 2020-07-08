@@ -53,4 +53,19 @@ for review in df['review']:
     pbar.update()
 
 
+'''
+各テキストデータのシーケンスを同じ長さに統一させる：
+・シーケンスの長さが200単語未満の場合，左側を0でパディング
+・シーケンスの長さが200単語以上の場合，最後の200単語の要素を使用する
+    sequence_length -> 時間分解能が200単語ということを表し，これらを変化させることでパフォーマンスの変化を調査することも面白いかも
+'''
+sequence_length = 200
+# とりあえず作成後のデータセットを0で初期化しておく
+sequences = np.zeros((len(mapped_reviews), sequence_length), dtype=int)
 
+for i, row in enumerate(mapped_reviews):
+    review_arr = np.array(row)
+    # 右詰めで値を上書きしていく
+    sequences[i, -len(row):] = review_arr[-sequence_length:]
+
+print(sequences[:20,:])
